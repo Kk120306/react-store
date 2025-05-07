@@ -1,6 +1,9 @@
 import { FRUITS } from '../Constants.js';
+import { useState } from 'react';
 
 const Store = () => {
+
+    const [filteredProducts, setFilteredProducts] = useState(FRUITS);
 
     return (
         <div>
