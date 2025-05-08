@@ -8,7 +8,7 @@ const Sidebar = () => {
 
     const [selectedVitamins, setSelectedVitamins] = useState([]);
     const [selectedColor, setSelectedColor] = useState(null);
-    const [selectedFamily, setSelectedFamily] = useState(null);
+    const [selectedFamily, setSelectedFamily] = useState([]);
 
     const handleCheckboxChange = (value) => {
         setSelectedVitamins((prev) =>
@@ -23,7 +23,11 @@ const Sidebar = () => {
     };
 
     const handleFamilyClick = (family) => {
-        setSelectedFamily(family === selectedFamily ? null : family);
+        setSelectedFamily((prev) =>
+            prev.includes(family)
+                ? prev.filter((v) => v !== family)
+                : [...prev, family]
+        );
     };
 
     return (
@@ -59,14 +63,17 @@ const Sidebar = () => {
                     <span style={{ marginLeft: '8px' }}>{familyHidden ? '▼' : '▲'}</span>
                 </div>
                 <div className={`family-grid ${familyHidden ? 'hidden' : 'expand'}`}>
-                    {FAMILYOPTIONS && FAMILYOPTIONS.map((family) => (
-                        <div
-                            key={family}
-                            className={`family-option ${selectedFamily === family ? 'selected' : ''}`}
-                            onClick={() => handleFamilyClick(family)}
-                            style={{ cursor: 'pointer', padding: '4px 8px', border: selectedFamily === family ? '2px solid black' : '1px solid #ccc', margin: '4px', borderRadius: '4px' }}
-                        >
-                            {family}
+                    {FAMILYOPTIONS.map((family) => (
+                        <div key={family.value} className="family-option">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    value={family.value}
+                                    checked={selectedFamily.includes(family.value)}
+                                    onChange={() => handleFamilyClick(family.value)}
+                                />
+                                <span style={{ marginLeft: '6px' }}>{family.label}</span>
+                            </label>
                         </div>
                     ))}
                 </div>
