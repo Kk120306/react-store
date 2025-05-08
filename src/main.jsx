@@ -4,13 +4,16 @@ import { createBrowserRouter, RouterProvider  } from 'react-router-dom'
 import './index.css'
 import routes from './routes'
 import { CartProvider } from './context/CartContext'
+import { FavProvider } from './context/FavContext'
 
 const router = createBrowserRouter(routes)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <CartProvider>
-        <RouterProvider router={router} />
+        <FavProvider>
+            <RouterProvider router={router} />
+        </FavProvider>
     </CartProvider>
   </StrictMode>,
 )
