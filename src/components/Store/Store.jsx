@@ -7,6 +7,7 @@ import Liked from '/liked.png';
 import Unliked from '/heart.png';
 import { useCart } from '../../context/CartContext.jsx';
 import { useFav } from '../../context/FavContext.jsx';
+import { Link } from 'react-router-dom';
 
 const Store = () => {
     const [selectedColor, setSelectedColor] = useState(null);
@@ -68,17 +69,21 @@ const Store = () => {
                         className="bg-white h-[280px] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-200 
                         flex flex-col justify-between items-center text-left"
                     >
-                        <img
-                            src={product.src}
-                            alt={product.name}
-                            className="w-16 h-16 object-cover rounded mb-4 mt-5"
-                        />
+                        <Link key={product.id} to={`/store/${encodeURIComponent(product.name)}`}>
+                            <img
+                                src={product.src}
+                                alt={product.name}
+                                className="w-16 h-16 object-cover rounded mb-4 mt-5"
+                            />
+                        </Link>
 
                         <div className="w-full flex justify-between items-start">
                             <div>
-                                <h2 className="text-lg font-bold">{product.name}</h2>
-                                <p className="text-gray-600 text-sm">{product.family} family</p>
-                                <p className="text-gray-600 text-sm">${product.price}</p>
+                                <Link key={product.id} to={`/store/${encodeURIComponent(product.name)}`}>
+                                    <h2 className="text-lg font-bold">{product.name}</h2>
+                                    <p className="text-gray-600 text-sm">{product.family} family</p>
+                                    <p className="text-gray-600 text-sm">${product.price}</p>
+                                </Link>
                             </div>
 
                             <div className="flex flex-col items-end gap-2">
@@ -99,7 +104,7 @@ const Store = () => {
                     </div>
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

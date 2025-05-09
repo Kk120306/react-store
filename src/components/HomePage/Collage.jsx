@@ -4,6 +4,7 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { Link } from 'react-router-dom';
 
 const Collage = () => {
 
@@ -36,10 +37,12 @@ const Collage = () => {
         <div className="carousel-wrapper">
             <Slider {...settings}>
                 {FRUITS.map(fruit => (
-                    <div key={fruit.id} className="fruit-card">
-                        <img src={fruit.src} alt={fruit.name} />
-                        <h3>{fruit.name}</h3>
-                    </div>
+                    <Link key={fruit.id} to={`/store/${encodeURIComponent(fruit.name)}`}>
+                        <div key={fruit.id} className="fruit-card">
+                            <img src={fruit.src} alt={fruit.name} />
+                            <h3>{fruit.name}</h3>
+                        </div>
+                    </Link>
                 ))}
             </Slider>
         </div>
