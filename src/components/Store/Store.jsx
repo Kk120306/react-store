@@ -1,35 +1,41 @@
 import { useState, useEffect } from 'react';
 import { FRUITS } from '../Constants.js';
 import Sidebar from './Sidebar/Sidebar';
-import ShopIn from '/shop-in.png';
-import ShopOut from '/shop-out.png';
-import Liked from '/liked.png';
-import Unliked from '/heart.png';
 import { useCart } from '../../context/CartContext.jsx';
 import { useFav } from '../../context/FavContext.jsx';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const Store = () => {
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedFamily, setSelectedFamily] = useState([]);
     const [selectedVitamins, setSelectedVitamins] = useState([]);
-
     const [filteredProducts, setFilteredProducts] = useState(FRUITS);
 
     const { cartItems, addToCart, removeFromCart } = useCart();
     const { favItems, addToFav, removeFav } = useFav();
 
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const showFavs = params.get("showFavs") === "true"; 
 
     useEffect(() => {
-        const filtered = FRUITS.filter(fruit => {
+        let filtered = FRUITS;
+
+        if (showFavs) {
+            filtered = filtered.filter(fruit => favItems.some(fav => fav.id === fruit.id));
+        }
+
+        filtered = filtered.filter(fruit => {
             const matchesColor = fruit.colors.includes(selectedColor) || selectedColor === null;
             const matchesFamily = selectedFamily.length > 0 ? selectedFamily.includes(fruit.family) : true;
             const matchesVitamins = selectedVitamins.length > 0 ? selectedVitamins.every(v => fruit.vitamins.includes(v)) : true;
 
             return matchesColor && matchesFamily && matchesVitamins;
         });
+
         setFilteredProducts(filtered);
-    }, [selectedColor, selectedFamily, selectedVitamins]);
+    }, [selectedColor, selectedFamily, selectedVitamins, favItems, showFavs]);
 
     const inCart = (id) => cartItems.some(item => item.id === id);
 
@@ -53,14 +59,14 @@ const Store = () => {
 
     return (
         <div className="flex flex-col md:flex-row mt-5 gap-4">
-            <Sidebar
+            {!showFavs && <Sidebar
                 selectedColor={selectedColor}
                 setSelectedColor={setSelectedColor}
                 selectedFamily={selectedFamily}
                 setSelectedFamily={setSelectedFamily}
                 selectedVitamins={selectedVitamins}
                 setSelectedVitamins={setSelectedVitamins}
-            />
+            />}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full auto-rows-[380px]">
                 {filteredProducts.map((product) => (
@@ -88,13 +94,13 @@ const Store = () => {
 
                             <div className="flex flex-col items-end gap-2">
                                 <img
-                                    src={inCart(product.id) ? ShopIn : ShopOut}
+                                    src={inCart(product.id) ? '/shop-in.png' : '/shop-out.png'}
                                     alt={inCart(product.id) ? 'Remove from cart' : 'Add to cart'}
                                     className="w-5 h-5 cursor-pointer"
                                     onClick={() => toggleCart(product)}
                                 />
                                 <img
-                                    src={inFav(product.id) ? Liked : Unliked}
+                                    src={inFav(product.id) ? '/liked.png' : '/heart.png'}
                                     alt="Like icon"
                                     className="w-5 h-5 cursor-pointer"
                                     onClick={() => toggleLike(product)}
